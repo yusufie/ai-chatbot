@@ -2,7 +2,8 @@ import * as React from 'react'
 import Link from 'next/link'
 
 import { cn } from '@/lib/utils'
-import { auth } from '@/auth'
+import { getServerSession } from "next-auth";
+import authOptions from '@/app/api/auth/[...nextauth]/options';
 import { Button, buttonVariants } from '@/components/ui/button'
 import {
   IconGitHub,
@@ -16,7 +17,7 @@ import { SidebarToggle } from './sidebar-toggle'
 import { ChatHistory } from './chat-history'
 
 async function UserOrLogin() {
-  const session = await auth()
+  const session = await getServerSession(authOptions);
   return (
     <>
       {session?.user ? (
@@ -38,7 +39,7 @@ async function UserOrLogin() {
           <UserMenu user={session.user} />
         ) : (
           <Button variant="link" asChild className="-ml-2">
-            <Link href="/sign-in?callbackUrl=/">Login</Link>
+            <Link href="/auth/login">Login</Link>
           </Button>
         )}
       </div>

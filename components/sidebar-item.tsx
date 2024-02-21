@@ -24,7 +24,7 @@ interface SidebarItemProps {
   children: React.ReactNode
 }
 
-export function SidebarItem({ index, chat, children }: SidebarItemProps) {
+export function SidebarItem({ index, chat, children }: Readonly<SidebarItemProps>) {
   const pathname = usePathname()
 
   const isActive = pathname === chat.path

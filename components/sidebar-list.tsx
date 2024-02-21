@@ -1,20 +1,39 @@
-import { clearChats, getChats } from '@/app/actions'
+import { clearChats } from '@/app/actions'
 import { ClearHistory } from '@/components/clear-history'
 import { SidebarItems } from '@/components/sidebar-items'
 import { ThemeToggle } from '@/components/theme-toggle'
-import { cache } from 'react'
+import { revalidateTag, revalidatePath } from "next/cache";
 
 interface SidebarListProps {
   userId?: string
   children?: React.ReactNode
 }
 
-const loadChats = cache(async (userId?: string) => {
-  return await getChats(userId)
-})
+async function getTheUser (userId: any) {
 
-export async function SidebarList({ userId }: SidebarListProps) {
-  const chats = await loadChats(userId)
+  const apiUrl = `http://localhost:3000/api/user/${userId}`;
+
+  try {
+    const res = await fetch(apiUrl, { next: { tags: ['TheChat'] } });
+
+    if (res.ok) {
+      revalidateTag('TheChat');
+      revalidatePath('/');
+    } else {
+      throw new Error('Failed to fetch the TheChat data');
+    }
+
+    return res.json();
+  } catch (error: any) {
+    console.error('Error fetching the TheChat data:', error.message);
+    // Handle the error gracefully (e.g., show a user-friendly message)
+    throw error;
+  }
+}
+
+export async function SidebarList({ userId }: Readonly<SidebarListProps>) {
+  const theUser = await getTheUser(userId)
+  const chats = theUser.user.chats;
 
   return (
     <div className="flex flex-1 flex-col overflow-hidden">

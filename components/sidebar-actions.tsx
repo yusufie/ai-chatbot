@@ -18,11 +18,7 @@ import {
 import { Button } from '@/components/ui/button'
 import { IconShare, IconSpinner, IconTrash } from '@/components/ui/icons'
 import { ChatShareDialog } from '@/components/chat-share-dialog'
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger
-} from '@/components/ui/tooltip'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 
 interface SidebarActionsProps {
   chat: Chat
@@ -34,7 +30,7 @@ export function SidebarActions({
   chat,
   removeChat,
   shareChat
-}: SidebarActionsProps) {
+}: Readonly<SidebarActionsProps>) {
   const router = useRouter()
   const [deleteDialogOpen, setDeleteDialogOpen] = React.useState(false)
   const [shareDialogOpen, setShareDialogOpen] = React.useState(false)

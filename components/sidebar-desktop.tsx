@@ -1,10 +1,11 @@
 import { Sidebar } from '@/components/sidebar'
 
-import { auth } from '@/auth'
+import { getServerSession } from "next-auth";
+import authOptions from "@/app/api/auth/[...nextauth]/options";
 import { ChatHistory } from '@/components/chat-history'
 
 export async function SidebarDesktop() {
-  const session = await auth()
+  const session = await getServerSession(authOptions);
 
   if (!session?.user?.id) {
     return null
