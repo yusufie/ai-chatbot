@@ -1,6 +1,5 @@
 import { ClearHistory } from '@/components/clear-history'
 import { SidebarItems } from '@/components/sidebar-items'
-import { ThemeToggle } from '@/components/theme-toggle'
 import { revalidateTag, revalidatePath } from "next/cache";
 
 interface SidebarListProps {
@@ -48,7 +47,6 @@ export async function SidebarList({ userId }: Readonly<SidebarListProps>) {
         )}
       </div>
       <div className="flex items-center justify-between p-4">
-        <ThemeToggle />
         <ClearHistory isEnabled={chats?.length > 0} />
       </div>
     </div>
