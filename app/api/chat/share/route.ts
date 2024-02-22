@@ -13,21 +13,21 @@ export async function POST(request: NextRequest) {
 
     const session = await getServerSession(authOptions);
     const userId = session?.user?.id
-/*   
+  
     if (!userId) {
       return new Response('Unauthorized', {
         status: 401
       })
     }
- */
+ 
     const chat = await Chat.findOne({ id });
-/* 
-    if (!chat || chat.userId.toString() !== session?.user?.id) {
-        return new Response('Something went wrong', {
-            status: 401
-        })
-    }
- */
+    /* 
+        if (!chat || chat.userId.toString() !== session?.user?.id) {
+            return new Response('Something went wrong', {
+                status: 401
+            })
+        }
+    */
     chat.sharePath = `/share/${chat.id}`;
 
     await chat.save();

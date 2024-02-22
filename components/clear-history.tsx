@@ -4,7 +4,6 @@ import * as React from 'react'
 import { useRouter } from 'next/navigation'
 import { toast } from 'react-hot-toast'
 
-import { ServerActionResult } from '@/lib/types'
 import { Button } from '@/components/ui/button'
 import {
   AlertDialog,
@@ -21,16 +20,40 @@ import { IconSpinner } from '@/components/ui/icons'
 
 interface ClearHistoryProps {
   isEnabled: boolean
-  clearChats: () => ServerActionResult<void>
 }
 
 export function ClearHistory({
   isEnabled = false,
-  clearChats
-}: ClearHistoryProps) {
+}: Readonly<ClearHistoryProps>) {
   const [open, setOpen] = React.useState(false)
-  const [isPending, startTransition] = React.useTransition()
+  const [isPending, setIsPending] = React.useState(false)
   const router = useRouter()
+
+  const clearChats = async () => {
+
+    setIsPending(true)
+    
+    try {
+      const response = await fetch('/api/chat/clear', {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+
+      if (!response.ok) {
+        throw new Error('Failed to clear chat history');
+      }
+
+      setOpen(false)
+      router.push('/')
+    } catch (error) {
+      console.error('Error clearing chat history:', error);
+      toast.error('Failed to clear chat history')
+    } finally {
+      setIsPending(false)
+    }
+  }
 
   return (
     <AlertDialog open={open} onOpenChange={setOpen}>
@@ -52,19 +75,9 @@ export function ClearHistory({
           <AlertDialogCancel disabled={isPending}>Cancel</AlertDialogCancel>
           <AlertDialogAction
             disabled={isPending}
-            onClick={event => {
+            onClick={(event) => {
               event.preventDefault()
-              startTransition(() => {
-                clearChats().then(result => {
-                  if (result && 'error' in result) {
-                    toast.error(result.error)
-                    return
-                  }
-
-                  setOpen(false)
-                  router.push('/')
-                })
-              })
+              clearChats()
             }}
           >
             {isPending && <IconSpinner className="mr-2 animate-spin" />}

@@ -99,7 +99,7 @@ export async function POST(req: Request) {
 export async function DELETE(request: NextRequest) {
   try {
     const { id, path } = await request.json();
-    // console.log("Deleting chat with id:", id);
+    console.log("Deleting chat with id:", id);
 
     await connectDB();
 
@@ -123,6 +123,10 @@ export async function DELETE(request: NextRequest) {
     if (!deletedChat) {
       return NextResponse.json({ message: "Chat not found" }, { status: 404 });
     }
+
+    // remove the chat from the user's chats array
+    theUser?.chats.pull(deletedChat._id);
+    await theUser?.save();
 
     // Revalidate the chat of the path
     revalidatePath(path || "/chat")
