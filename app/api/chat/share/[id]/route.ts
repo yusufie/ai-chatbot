@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from "next-auth";
-import authOptions from '../../../auth/[...nextauth]/options';
+import authOptions from '@/app/api/auth/[...nextauth]/options';
 import Chat from '@/models/chat';
 import connectDB from '@/utils/connectDB'
 
@@ -18,13 +18,13 @@ export async function GET(
 
       const session = await getServerSession(authOptions);
       const userId = session?.user?.id
-    /*   
+
       if (!userId) {
         return new Response('Unauthorized', {
           status: 401
         })
       }
-    */
+
 
       // Find the specific shared chat based on the id
       const sharedChat = await Chat.findOne({ id });
